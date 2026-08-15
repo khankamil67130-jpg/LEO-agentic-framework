@@ -20,105 +20,54 @@ Large Language Model (LLM) agents often suffer from **context drift, token bloat
 
 ---
 
-## 🏛️ Master System Architecture┌────────────────────────────────────────┐
-                │      Client / Natural Language Query   │
-                └───────────────────┬────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                       MASTER AGENT ORCHESTRATOR                        │
-│  • Fuzzy Query Normalizer           • Session Turn Memory Store        │
-│  • Contextual Pronoun Resolver      • Dynamic Disambiguation Guard     │
-└───────────────────────────────────┬────────────────────────────────────┘
-                                    │
-                                    ▼
-┌────────────────────────────────────────────────────────────────────────┐
-│                         INTENT ROUTER ENGINE                           │
-│              Decomposes compound queries into a plan DAG               │
-└───────┬──────────────┬──────────────┬──────────────┬────────────┬──────┘
-        │              │              │              │            │
-        ▼              ▼              ▼              ▼            ▼
- ┌─────────────┐┌─────────────┐┌─────────────┐┌─────────────┐┌─────────────┐
- │ Desktop GUI ││  Terminal   ││  Workspace  ││ Web & RAG   ││ Diagnostics │
- │   Worker    ││   Worker    ││   Manager   ││ Intelligence││   Worker    │
- └─────────────┘└─────────────┘└─────────────┘└─────────────┘└─────────────┘
- ---
+## 🏛️ Master System Architecture
 
-## ⚙️ Core Subsystem Blueprints
+```mermaid
+flowchart TD
+    A[Client / Natural Language Query] --> B[Master Agent Orchestrator]
+    B --> C[Intent Router Engine]
+    C --> D[Desktop GUI Worker]
+    C --> E[Terminal System Worker]
+    C --> F[Workspace Manager Worker]
+    C --> G[Web & RAG Intelligence Worker]
+    C --> H[System Diagnostics Worker]
 
----
+⚙️ Core Subsystem Blueprints
+Subsystem 1: Context-Isolated Multi-Worker Orchestrator
+code Mermaid
 
-### Subsystem 1: Context-Isolated Multi-Worker Orchestrator
+flowchart TD
+    Q[User Input Query] --> N[Fuzzy Normalizer & Context Resolver]
+    N --> D{Dynamic Disambiguation Check}
+    D -->|Ambiguous Request| User[Prompt User For Clarification]
+    D -->|Validated Intent| R[Intent Routing & Execution DAG]
+    R --> W1[Desktop GUI Worker Context]
+    R --> W2[Terminal Worker Context]
+    R --> W3[Web Intelligence Worker Context]
 
-Rather than stuffing all tool definitions into a single, massive prompt context, Leo dispatches tasks across isolated worker units.
-[ User Input Query ]
-                           │
-                           ▼
-            ┌──────────────────────────────┐
-            │ Fuzzy Normalizer & Resolver  │
-            └──────────────┬───────────────┘
-                           │
-                           ▼
-            ┌──────────────────────────────┐
-            │ Dynamic Disambiguation Check │
-            └──────────────┬───────────────┘
-                           │ (Valid Intent)
-                           ▼
-            ┌──────────────────────────────┐
-            │ Intent Routing & Plan DAG    │
-            └──────────────┬───────────────┘
-                           │
-    ┌──────────────────────┼──────────────────────┐
-    ▼                      ▼                      ▼
-    ┌───────────────┐ ┌───────────────┐ ┌───────────────┐
-│ Desktop Worker│ │Terminal Worker│ │Web IntelWorker│
-│ (GUI Context) │ │(System Context│ │(Search Context│
-└───────────────┘ └───────────────┘ └───────────────┘
-#### Key Engineering Features:
-* **Dynamic Disambiguation:** Halts execution gracefully and queries the user for clarification when ambiguous multi-target inputs are detected.
-* **State & Audit Registry:** Real-time logging of worker actions, targets, execution status, and error messages to enable automatic failure analysis.
-* **Session Memory Store:** Thread-safe multi-turn context retention with pronoun resolution across conversation turns.
+Key Engineering Features:
 
----
+    Dynamic Disambiguation: Halts execution gracefully and queries the user for clarification when ambiguous multi-target inputs are detected.
 
-### Subsystem 2: 4-Layer Deterministic Code Synthesis Pipeline
+    State & Audit Registry: Real-time logging of worker actions, targets, execution status, and error messages to enable automatic failure analysis.
 
-A closed-loop code generation pipeline designed for strict framework compliance and zero hallucination.
-[ Input Payload: Query + Syntax Rules + Algorithm Specs + Roadmap ]
-│
-▼
-┌──────────────────────────────────────────────────────────────┐
-│ Layer 1: Payload Contract Ingestion │
-└──────────────────────────────┬───────────────────────────────┘
-│
-▼
-┌──────────────────────────────────────────────────────────────┐
-│ Layer 2: Sanitization & Context Isolation Guard │
-│ • Enforces presence of all mandatory payload keys │
-│ • Halts pipeline immediately on missing schema contracts │
-└──────────────────────────────┬───────────────────────────────┘
-│
-▼
-┌──────────────────────────────────────────────────────────────┐
-│ Layer 3: True Iterative Modular Synthesis Engine │
-│ • Roadmap Deconstruction into sequential modules │
-│ • Cumulative Context Accumulation (No state panic) │
-│ • Deterministic Prompt Laws (Zero hallucination, No ghosts) │
-└──────────────────────────────┬───────────────────────────────┘
-│
-▼
-┌──────────────────────────────────────────────────────────────┐
-│ Layer 4: Closed-Loop Compiler Feedback & Validation │
-│ • Injects framework preprocessor mappings & DSL macros │
-│ • Executes g++ -std=c++17 syntax verification │
-│ • Intercepts syntax discrepancies prior to artifact output │
-└──────────────────────────────────────────────────────────────┘
----
+    Session Memory Store: Thread-safe multi-turn context retention with pronoun resolution across conversation turns.
 
-## 🔬 Core Architectural Contracts (Reference Logic)
+Subsystem 2: 4-Layer Deterministic Code Synthesis Pipeline
+code Mermaid
 
-### 1. Intent Router & Worker Dispatch Contract
-```python
+flowchart TD
+    P[Payload: Intent + Syntax Rules + Algorithm Logic + Roadmap] --> L1[Layer 1: Payload Contract Ingestion]
+    L1 --> L2[Layer 2: Schema Sanitization & Context Isolation Guard]
+    L2 --> L3[Layer 3: True Iterative Modular Synthesis Engine]
+    L3 --> L4[Layer 4: Closed-Loop Compiler Verification]
+    L4 -->|Compilation Success| Out[Clean Executable Code Artifact]
+    L4 -->|Syntax Error Detected| L3
+
+🔬 Core Architectural Contracts (Reference Logic)
+1. Intent Router & Worker Dispatch Contract
+code Python
+
 class MasterOrchestratorContract:
     """Decouples natural language parsing from domain execution."""
     
@@ -139,6 +88,10 @@ class MasterOrchestratorContract:
             results.append(output)
             
         return "\n".join(results)
+
+2. Closed-Loop Compiler Verification Contract
+code Python
+
 class DeterministicSynthesisContract:
     """Iterative synthesis with closed-loop compiler verification."""
     
@@ -157,3 +110,23 @@ class DeterministicSynthesisContract:
             text=True
         )
         return result.returncode == 0
+
+🚀 Low-Latency Local Runtime Engine
+
+    Model: Quantized Qwen2.5-Coder-7B-Instruct running locally via llama-cpp-python.
+
+    Optimization: Flash Attention, VRAM offloading (n_gpu_layers = -1), KV cache offloading, and memory-mapped file execution (mmap).
+
+    Telemetry: Real-time VRAM/RAM hardware profiling using pynvml and psutil.
+
+🗺️ Engineering Roadmap
+
+    Hierarchical Intent Routing & Dynamic Disambiguation.
+
+    4-Layer Deterministic Code Synthesis Pipeline with Compiler Verification.
+
+    Domain-Isolated Worker Registry (GUI, Terminal, Web, Diagnostics).
+
+    Distributed Agent Event Bus with Pub/Sub Architecture.
+
+    Financial Domain Document RAG & Deterministic Reconciliation Agent.
