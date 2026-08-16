@@ -22,52 +22,43 @@ Large Language Model (LLM) agents often suffer from **context drift, token bloat
 
 ## 🏛️ Master System Architecture
 
-```mermaid
-flowchart TD
-    A[Client / Natural Language Query] --> B[Master Agent Orchestrator]
-    B --> C[Intent Router Engine]
-    C --> D[Desktop GUI Worker]
-    C --> E[Terminal System Worker]
-    C --> F[Workspace Manager Worker]
-    C --> G[Web & RAG Intelligence Worker]
-    C --> H[System Diagnostics Worker]
+* **Client Layer:** Ingests raw multi-turn user intent & compound instructions.
+* **Master Orchestration Layer:** Normalizes typos, resolves context pronouns, and decomposes inputs into a directed execution plan.
+* **Intent Routing Engine:** Dispatches isolated sub-tasks to dedicated worker domains:
+  * 🖥️ **Desktop GUI Worker:** Interacts with local workspace applications and window contexts.
+  * 💻 **Terminal System Worker:** Sandboxed command execution, directory scaffolding, and file I/O.
+  * 🌐 **Web Intelligence Worker:** Retrieval Augmented Generation (RAG) and search data synthesis.
+  * 📊 **Diagnostics Worker:** Hardware telemetry, VRAM profiling, and real-time execution audit logging.
 
-⚙️ Core Subsystem Blueprints
-Subsystem 1: Context-Isolated Multi-Worker Orchestrator
-code Mermaid
+---
 
-flowchart TD
-    Q[User Input Query] --> N[Fuzzy Normalizer & Context Resolver]
-    N --> D{Dynamic Disambiguation Check}
-    D -->|Ambiguous Request| User[Prompt User For Clarification]
-    D -->|Validated Intent| R[Intent Routing & Execution DAG]
-    R --> W1[Desktop GUI Worker Context]
-    R --> W2[Terminal Worker Context]
-    R --> W3[Web Intelligence Worker Context]
+## ⚙️ Core Subsystem Blueprints
 
-Key Engineering Features:
+### Subsystem 1: Context-Isolated Multi-Worker Orchestrator
 
-    Dynamic Disambiguation: Halts execution gracefully and queries the user for clarification when ambiguous multi-target inputs are detected.
+Rather than stuffing all tool definitions into a single massive prompt context, Leo dispatches tasks across isolated worker units.
 
-    State & Audit Registry: Real-time logging of worker actions, targets, execution status, and error messages to enable automatic failure analysis.
+* **Dynamic Disambiguation:** Automatically detects ambiguous queries (e.g., matching multiple target files) and halts execution to query the user for explicit clarification.
+* **State & Audit Registry:** Real-time logging of worker actions, targets, execution status, and error messages to enable automatic failure analysis.
+* **Session Memory Store:** Thread-safe multi-turn context retention with pronoun resolution across conversation turns.
 
-    Session Memory Store: Thread-safe multi-turn context retention with pronoun resolution across conversation turns.
+---
 
-Subsystem 2: 4-Layer Deterministic Code Synthesis Pipeline
-code Mermaid
+### Subsystem 2: 4-Layer Deterministic Code Synthesis Pipeline
 
-flowchart TD
-    P[Payload: Intent + Syntax Rules + Algorithm Logic + Roadmap] --> L1[Layer 1: Payload Contract Ingestion]
-    L1 --> L2[Layer 2: Schema Sanitization & Context Isolation Guard]
-    L2 --> L3[Layer 3: True Iterative Modular Synthesis Engine]
-    L3 --> L4[Layer 4: Closed-Loop Compiler Verification]
-    L4 -->|Compilation Success| Out[Clean Executable Code Artifact]
-    L4 -->|Syntax Error Detected| L3
+A closed-loop code generation pipeline designed for strict framework compliance and zero hallucination.
 
+* **Layer 1 (Payload Contract Ingestion):** Ingests structured generation requests containing user intent, syntax rules, algorithmic specs, and roadmaps.
+* **Layer 2 (Schema Sanitization & Context Isolation Guard):** Enforces mandatory payload schema contracts and halts pipeline immediately on missing parameters.
+* **Layer 3 (True Iterative Modular Synthesis):** Deconstructs roadmaps into sequential module tasks with cumulative context passing to eliminate model state panic.
+* **Layer 4 (Closed-Loop Compiler Verification):** Injects framework preprocessor mappings and runs `g++ -std=c++17` syntax verification in a sub-process to intercept syntax drift prior to release.
+
+---
 🔬 Core Architectural Contracts (Reference Logic)
-1. Intent Router & Worker Dispatch Contract
-code Python
 
+### 1. Intent Router & Worker Dispatch Contract
+
+```python
 class MasterOrchestratorContract:
     """Decouples natural language parsing from domain execution."""
     
@@ -88,11 +79,12 @@ class MasterOrchestratorContract:
             results.append(output)
             
         return "\n".join(results)
-
+```
+                                 
 2. Closed-Loop Compiler Verification Contract
-code Python
 
-class DeterministicSynthesisContract:
+```python
+   class DeterministicSynthesisContract:
     """Iterative synthesis with closed-loop compiler verification."""
     
     def synthesize_and_verify(self, payload: dict, target_file: str) -> bool:
@@ -110,23 +102,21 @@ class DeterministicSynthesisContract:
             text=True
         )
         return result.returncode == 0
+ ```
+
 
 🚀 Low-Latency Local Runtime Engine
-
-    Model: Quantized Qwen2.5-Coder-7B-Instruct running locally via llama-cpp-python.
-
-    Optimization: Flash Attention, VRAM offloading (n_gpu_layers = -1), KV cache offloading, and memory-mapped file execution (mmap).
-
-    Telemetry: Real-time VRAM/RAM hardware profiling using pynvml and psutil.
-
+Model: Quantized Qwen2.5-Coder-7B-Instruct running locally via llama-cpp-python.
+Optimization: Flash Attention, VRAM offloading (n_gpu_layers = -1), KV cache offloading, and memory-mapped file execution (mmap).
+Telemetry: Real-time VRAM/RAM hardware profiling using pynvml and psutil.
 🗺️ Engineering Roadmap
 
-    Hierarchical Intent Routing & Dynamic Disambiguation.
+Hierarchical Intent Routing & Dynamic Disambiguation.
 
-    4-Layer Deterministic Code Synthesis Pipeline with Compiler Verification.
+4-Layer Deterministic Code Synthesis Pipeline with Compiler Verification.
 
-    Domain-Isolated Worker Registry (GUI, Terminal, Web, Diagnostics).
+Domain-Isolated Worker Registry (GUI, Terminal, Web, Diagnostics).
 
-    Distributed Agent Event Bus with Pub/Sub Architecture.
+Distributed Agent Event Bus with Pub/Sub Architecture.
 
-    Financial Domain Document RAG & Deterministic Reconciliation Agent.
+Financial Domain Document RAG & Deterministic Reconciliation Agent.      
